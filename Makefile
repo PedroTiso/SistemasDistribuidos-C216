@@ -15,20 +15,20 @@ help:
 	@echo "  make clean    - remove arquivos temporários"
 
 install:
-	poetry install
+	cd backend && poetry install
 
 test:
-	$(PYTEST)
+	cd backend && $(PYTEST)
 
 lint:
-	$(RUFF) check .
+	cd backend && $(RUFF) check .
 
 format:
-	$(RUFF) format .
+	cd backend && $(RUFF) format .
 
 run:
-	$(UVICORN) app.main:app --reload
+	cd backend && $(UVICORN) app.main:app --reload
 
 clean:
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	cd backend && find . -type d -name "__pycache__" -exec rm -rf {} +
+	cd backend && find . -type d -name ".pytest_cache" -exec rm -rf {} +
