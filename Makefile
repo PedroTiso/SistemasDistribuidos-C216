@@ -27,7 +27,7 @@ install:
 	cd backend && poetry install
 
 test:
-	cd backend && $(PYTEST)
+	cd backend && $(PYTEST) tests -v
 
 lint:
 	cd backend && $(RUFF) check .
