@@ -24,10 +24,10 @@ help:
 	@echo "  make db-shell     - abre o terminal do PostgreSQL"
 
 install:
-	cd backend && poetry install
+	cd backend && poetry install --with dev --no-root
 
 test:
-	cd backend && $(PYTEST)
+	cd backend && $(PYTEST) tests -v
 
 lint:
 	cd backend && $(RUFF) check .
