@@ -28,6 +28,9 @@ dev = [
 testpaths = ["tests"]
 pythonpath = ["."]
 
+[tool.ruff.lint]
+ignore = ["B008"]
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
