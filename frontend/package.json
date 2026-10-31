@@ -12,7 +12,9 @@
     "lint": "biome lint .",
     "check": "biome check .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
@@ -27,6 +29,7 @@
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
     "@testing-library/user-event": "latest",
+    "@playwright/test": "latest",
     "@vitejs/plugin-react": "latest",
     "jsdom": "latest",
     "vitest": "latest"
