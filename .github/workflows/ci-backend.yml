@@ -40,6 +40,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: app_db
+          POSTGRES_USER: app_user
+          POSTGRES_PASSWORD: app_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app_user -d app_db"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+psycopg://app_user:app_password@localhost:5432/app_db
+
     defaults:
       run:
         working-directory: backend
@@ -58,6 +76,9 @@ jobs:
 
       - name: Instalar dependencias
         run: poetry install --with dev --no-root --no-interaction
+
+      - name: Executar migrations
+        run: poetry run alembic upgrade head
 
       - name: Executar testes unitarios
         run: poetry run pytest tests/unit -v

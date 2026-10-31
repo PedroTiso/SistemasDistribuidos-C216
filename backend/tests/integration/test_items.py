@@ -1,14 +1,17 @@
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import delete
 
-from app.api.routes.items import service
+from app.database.session import SessionLocal
 from app.main import app
+from app.models.item import Item
 
 
 @pytest.fixture(autouse=True)
 def reset_items():
-    service._items.clear()
-    service._next_id = 1
+    with SessionLocal() as db:
+        db.execute(delete(Item))
+        db.commit()
 
 
 @pytest.fixture
@@ -56,7 +59,11 @@ def test_replace_item(client):
     )
 
     assert response.status_code == 200
-    assert response.json() == {"id": 1, "name": "Livro", "description": "FastAPI"}
+    assert response.json() == {
+        "id": created["id"],
+        "name": "Livro",
+        "description": "FastAPI",
+    }
 
 
 def test_update_item_partially(client):
@@ -67,7 +74,11 @@ def test_update_item_partially(client):
     response = client.patch(f"/items/{created['id']}", json={"description": "Nova"})
 
     assert response.status_code == 200
-    assert response.json() == {"id": 1, "name": "Caderno", "description": "Nova"}
+    assert response.json() == {
+        "id": created["id"],
+        "name": "Caderno",
+        "description": "Nova",
+    }
 
 
 def test_delete_item(client):
@@ -90,3 +101,13 @@ def test_item_id_must_be_positive(client):
     response = client.get("/items/0")
 
     assert response.status_code == 422
+
+
+def test_item_persists_after_client_restart(client):
+    created = client.post("/items", json={"name": "Persistente"}).json()
+
+    with TestClient(app) as restarted_client:
+        response = restarted_client.get(f"/items/{created['id']}")
+
+    assert response.status_code == 200
+    assert response.json() == created

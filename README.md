@@ -13,6 +13,15 @@ make install
 make test
 ```
 
+Para executar os testes de integração, o PostgreSQL deve estar disponível e a
+migration inicial deve ser aplicada:
+
+```bash
+make db-up
+make db-upgrade
+make test
+```
+
 Como alternativa, sem Make (inclusive no Windows):
 
 ```bash

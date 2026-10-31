@@ -1,4 +1,4 @@
-.PHONY: help install test lint format run clean docker-build docker-up docker-down docker-logs docker-ps db-up db-shell
+.PHONY: help install test lint format run clean docker-build docker-up docker-down docker-logs docker-ps db-up db-shell db-upgrade db-current db-migration frontend-install frontend-dev frontend-lint frontend-format frontend-check frontend-test frontend-test-e2e frontend-build check-all
 
 PYTHON := poetry run python
 PYTEST := poetry run pytest
@@ -62,3 +62,38 @@ db-up:
 
 db-shell:
 	$(COMPOSE) exec database sh -c 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'
+
+db-upgrade:
+	cd backend && poetry run alembic upgrade head
+
+db-current:
+	cd backend && poetry run alembic current
+
+db-migration:
+	cd backend && poetry run alembic revision --autogenerate -m "$(msg)"
+
+frontend-install:
+	cd frontend && npm ci
+
+frontend-dev:
+	cd frontend && npm run dev
+
+frontend-lint:
+	cd frontend && npm run check
+
+frontend-format:
+	cd frontend && npm run format
+
+frontend-check:
+	cd frontend && npm run format:check && npm run check
+
+frontend-test:
+	cd frontend && npm test
+
+frontend-test-e2e:
+	cd frontend && npm run test:e2e
+
+frontend-build:
+	cd frontend && npm run build
+
+check-all: lint test frontend-check frontend-test frontend-build
