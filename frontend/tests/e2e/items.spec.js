@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("cadastra um item e exibe na listagem", async ({ page }) => {
   await page.goto("/");
+  await expect(page.getByText("Nenhum item cadastrado.")).toBeVisible();
 
   await page.getByLabel(/Nome/).fill("Notebook");
   await page.getByLabel(/Descrição/).fill("14 polegadas");
@@ -10,6 +11,9 @@ test("cadastra um item e exibe na listagem", async ({ page }) => {
   await expect(page.getByRole("list")).toContainText("Notebook");
   await expect(page.getByRole("list")).toContainText("14 polegadas");
   await expect(page.getByText("Nenhum item cadastrado.")).toBeHidden();
+
+  await page.reload();
+  await expect(page.getByRole("list")).toContainText("Notebook");
 });
 
 test("exibe validação quando o nome está vazio", async ({ page }) => {
