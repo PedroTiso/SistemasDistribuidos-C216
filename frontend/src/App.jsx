@@ -1,12 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemForm from "./components/ItemForm";
 import ItemList from "./components/ItemList";
+import { createItem, listItems } from "./services/items";
 
 function App() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleAddItem(item) {
-    setItems((currentItems) => [...currentItems, { ...item, id: crypto.randomUUID() }]);
+  useEffect(() => {
+    let isMounted = true;
+
+    listItems()
+      .then((loadedItems) => {
+        if (isMounted) {
+          setItems(loadedItems);
+        }
+      })
+      .catch((requestError) => {
+        if (isMounted) {
+          setError(requestError.message);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  async function handleAddItem(item) {
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const createdItem = await createItem(item.name, item.description);
+      setItems((currentItems) => [...currentItems, createdItem]);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -31,7 +70,7 @@ function App() {
               <h2 className="text-xl font-bold">Novo item</h2>
             </div>
 
-            <ItemForm onAdd={handleAddItem} />
+            <ItemForm onAdd={handleAddItem} submitting={submitting} />
           </section>
 
           <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -42,12 +81,23 @@ function App() {
               <h2 className="text-xl font-bold">Itens cadastrados</h2>
             </div>
 
-            <ItemList items={items} />
+            {error && (
+              <p className="mb-4 rounded-xl bg-red-50 p-4 text-sm text-red-700" role="alert">
+                {error}
+              </p>
+            )}
+            {loading ? (
+              <p className="flex min-h-64 items-center justify-center text-sm text-slate-500">
+                Carregando itens...
+              </p>
+            ) : (
+              <ItemList items={items} />
+            )}
           </section>
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-500">
-          Os dados são temporários e serão apagados ao atualizar a página.
+          Os dados são persistidos na API e continuam disponíveis após atualizar a página.
         </p>
       </div>
     </main>

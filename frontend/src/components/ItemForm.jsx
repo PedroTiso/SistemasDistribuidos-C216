@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { validateItem } from "../validation";
 
-function ItemForm({ onAdd }) {
+function ItemForm({ onAdd, submitting = false }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState({});
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const result = validateItem(name, description);
@@ -16,7 +16,7 @@ function ItemForm({ onAdd }) {
       return;
     }
 
-    onAdd(result.values);
+    await onAdd(result.values);
     setName("");
     setDescription("");
     setErrors({});
@@ -67,13 +67,14 @@ function ItemForm({ onAdd }) {
       </div>
 
       <button
-        className="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
+        className="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={submitting}
         type="submit"
       >
         <span aria-hidden="true" className="mr-2 text-lg">
           +
         </span>
-        Adicionar
+        {submitting ? "Salvando..." : "Adicionar"}
       </button>
     </form>
   );
