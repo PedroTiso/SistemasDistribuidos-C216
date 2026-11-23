@@ -2,7 +2,6 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 Priority = Literal["low", "medium", "high"]
 Status = Literal["open", "in_progress", "resolved", "cancelled"]
 
