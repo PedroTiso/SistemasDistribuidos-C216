@@ -1,0 +1,36 @@
+name: CI Backend
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Testes do backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Baixar o repositorio
+        uses: actions/checkout@v6
+
+      - name: Configurar Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Instalar Poetry
+        run: pipx install poetry==2.4.1
+
+      - name: Instalar dependencias
+        run: poetry install --with dev --no-root --no-interaction
+
+      - name: Executar Pytest
+        run: poetry run pytest tests -v
