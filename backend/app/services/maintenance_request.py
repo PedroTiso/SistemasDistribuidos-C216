@@ -1,5 +1,5 @@
-from app.domain.maintenance import validate_priority, validate_title
 from app.schemas.maintenance_request import MaintenanceRequest, MaintenanceRequestCreate
+from maintenance import validate_priority, validate_title
 
 
 class MaintenanceRequestService:
