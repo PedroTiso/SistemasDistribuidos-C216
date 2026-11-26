@@ -4,8 +4,9 @@ Revision ID: 0001_create_maintenance_requests
 Revises:
 """
 
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 revision = "0001_create_maintenance_requests"
 down_revision = None
