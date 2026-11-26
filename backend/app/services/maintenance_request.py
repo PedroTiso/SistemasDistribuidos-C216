@@ -1,27 +1,40 @@
-from app.schemas.maintenance_request import MaintenanceRequest, MaintenanceRequestCreate
-from maintenance import validate_priority, validate_title
+from sqlalchemy.orm import Session
+
+from app.repositories.maintenance_request import MaintenanceRequestRepository
+from app.schemas.maintenance_request import (
+    MaintenanceRequest,
+    MaintenanceRequestCreate,
+    MaintenanceRequestPatch,
+    MaintenanceRequestUpdate,
+)
 
 
 class MaintenanceRequestService:
-    def __init__(self) -> None:
-        self._requests: list[MaintenanceRequest] = []
-        self._next_id = 1
+    def __init__(self, db: Session) -> None:
+        self.repository = MaintenanceRequestRepository(db)
 
     def list(self) -> list[MaintenanceRequest]:
-        return self._requests.copy()
+        return self.repository.list()
+
+    def get(self, request_id: int) -> MaintenanceRequest | None:
+        return self.repository.get(request_id)
 
     def create(self, data: MaintenanceRequestCreate) -> MaintenanceRequest:
-        request = MaintenanceRequest(
-            id=self._next_id,
-            title=validate_title(data.title),
-            description=data.description.strip(),
-            location=data.location.strip(),
-            priority=validate_priority(data.priority),
-        )
-        self._requests.append(request)
-        self._next_id += 1
-        return request
+        return self.repository.create(data)
 
-    def clear(self) -> None:
-        self._requests.clear()
-        self._next_id = 1
+    def replace(
+        self,
+        request_id: int,
+        data: MaintenanceRequestUpdate,
+    ) -> MaintenanceRequest | None:
+        return self.repository.replace(request_id, data)
+
+    def update(
+        self,
+        request_id: int,
+        data: MaintenanceRequestPatch,
+    ) -> MaintenanceRequest | None:
+        return self.repository.update(request_id, data)
+
+    def delete(self, request_id: int) -> bool:
+        return self.repository.delete(request_id)
