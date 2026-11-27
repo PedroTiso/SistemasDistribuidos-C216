@@ -5,7 +5,9 @@ import MaintenanceRequestForm from "../components/MaintenanceRequestForm.jsx";
 import MaintenanceRequestList from "../components/MaintenanceRequestList.jsx";
 import {
   createMaintenanceRequest,
+  deleteMaintenanceRequest,
   listMaintenanceRequests,
+  updateMaintenanceRequest,
 } from "../services/maintenanceRequests.js";
 
 function CreateCallPage() {
@@ -47,25 +49,47 @@ function CreateCallPage() {
     try {
       const createdRequest = await createMaintenanceRequest(request);
       setRequests((currentRequests) => [...currentRequests, createdRequest]);
+      return true;
     } catch (requestError) {
       setError(requestError.message);
+      return false;
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleUpdateRequest = (updatedRequest) => {
-    setRequests((currentRequests) =>
-      currentRequests.map((request) =>
-        request.id === updatedRequest.id ? updatedRequest : request,
-      ),
-    );
+  const handleUpdateRequest = async (updatedRequest) => {
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const savedRequest = await updateMaintenanceRequest(updatedRequest.id, {
+        description: updatedRequest.description,
+        location: updatedRequest.location,
+        priority: updatedRequest.priority,
+        title: updatedRequest.title,
+      });
+      setRequests((currentRequests) =>
+        currentRequests.map((request) => (request.id === savedRequest.id ? savedRequest : request)),
+      );
+    } catch (requestError) {
+      setError(requestError.message);
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleDeleteRequest = (requestId) => {
-    setRequests((currentRequests) => currentRequests.filter((request) => request.id !== requestId));
-    if (editingRequest?.id === requestId) {
-      setEditingRequest(null);
+  const handleDeleteRequest = async (requestId) => {
+    setError("");
+
+    try {
+      await deleteMaintenanceRequest(requestId);
+      setRequests((currentRequests) =>
+        currentRequests.filter((request) => request.id !== requestId),
+      );
+    } catch (requestError) {
+      setError(requestError.message);
     }
   };
 
@@ -159,6 +183,7 @@ function CreateCallPage() {
               initialRequest={editingRequest}
               onCancel={cancelRequest}
               onUpdate={handleUpdateRequest}
+              submitting={submitting}
             />
           </div>
         </div>

@@ -35,13 +35,16 @@ function MaintenanceRequestForm({
       return;
     }
 
-    if (initialRequest) {
-      await onUpdate({ ...initialRequest, ...result.values });
+    const saved = initialRequest
+      ? await onUpdate({ ...initialRequest, ...result.values })
+      : await onAdd({ ...result.values, status: "open" });
+
+    if (saved === false) {
+      return;
     } else {
-      await onAdd({ ...result.values, status: "open" });
+      onCancel?.();
     }
 
-    onCancel?.();
     setTitle("");
     setDescription("");
     setLocation("");

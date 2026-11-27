@@ -43,3 +43,29 @@ export function createMaintenanceRequest(requestData) {
     "Erro ao registrar o chamado.",
   );
 }
+
+export function updateMaintenanceRequest(requestId, requestData) {
+  return request(
+    `${REQUESTS_URL}/${requestId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestData),
+    },
+    "Erro ao atualizar o chamado.",
+  );
+}
+
+export async function deleteMaintenanceRequest(requestId) {
+  let response;
+
+  try {
+    response = await fetch(`${REQUESTS_URL}/${requestId}`, { method: "DELETE" });
+  } catch {
+    throw new Error("Não foi possível conectar à API.");
+  }
+
+  if (!response.ok) {
+    throw new Error("Erro ao excluir o chamado.");
+  }
+}
