@@ -13,10 +13,11 @@
     "check": "biome check ."
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
     "@tailwindcss/vite": "latest",
+    "@vitejs/plugin-react": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-router-dom": "^7.18.7",
     "tailwindcss": "latest",
     "vite": "latest"
   },
