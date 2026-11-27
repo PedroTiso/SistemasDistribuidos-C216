@@ -9,12 +9,20 @@ test("registra, edita e exclui um chamado", async ({ page }) => {
   await page.getByRole("button", { name: /registrar chamado/i }).click();
   await expect(page.getByRole("list")).toContainText("Projetor sem imagem");
 
-  await page.getByRole("button", { name: /editar/i }).click();
+  await page
+    .getByRole("listitem")
+    .first()
+    .getByRole("button", { name: /editar/i })
+    .click();
   await page.getByRole("dialog").locator("#title").fill("Projetor ajustado");
   await page.getByRole("button", { name: /salvar alterações/i }).click();
   await expect(page.getByRole("list")).toContainText("Projetor ajustado");
 
-  await page.getByRole("button", { name: /excluir/i }).click();
+  await page
+    .getByRole("listitem")
+    .first()
+    .getByRole("button", { name: /excluir/i })
+    .click();
   await expect(page.getByText("Nenhum chamado registrado ainda.")).toBeVisible();
 });
 
