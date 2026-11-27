@@ -1,4 +1,10 @@
-function ActionButton({ children, onClick, variant = "primary", type = "button" }) {
+function ActionButton({
+  children,
+  disabled = false,
+  onClick,
+  variant = "primary",
+  type = "button",
+}) {
   const styles = {
     primary: "bg-amber-300 text-[#17211b] hover:bg-amber-200",
     dark: "bg-[#17211b] text-amber-300 hover:bg-[#223128]",
@@ -7,7 +13,8 @@ function ActionButton({ children, onClick, variant = "primary", type = "button" 
 
   return (
     <button
-      className={`rounded-full px-6 py-3 text-sm font-bold transition focus:outline-none focus:ring-4 focus:ring-teal-200 ${styles[variant]}`}
+      className={`rounded-full px-6 py-3 text-sm font-bold transition focus:outline-none focus:ring-4 focus:ring-teal-200 disabled:cursor-not-allowed disabled:opacity-40 ${styles[variant]}`}
+      disabled={disabled}
       onClick={onClick}
       type={type}
     >

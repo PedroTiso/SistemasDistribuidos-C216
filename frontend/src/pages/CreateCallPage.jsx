@@ -1,7 +1,16 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import ActionButton from "../components/common/ActionButton.jsx";
+import MaintenanceRequestForm from "../components/MaintenanceRequestForm.jsx";
+import MaintenanceRequestList from "../components/MaintenanceRequestList.jsx";
 
 function CreateCallPage() {
+  const [requests, setRequests] = useState([]);
+
+  function handleAddRequest(request) {
+    setRequests((currentRequests) => [...currentRequests, { ...request, id: crypto.randomUUID() }]);
+  }
+
   return (
     <main className="min-h-screen bg-[#17211b] px-4 py-8 text-stone-100 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
@@ -28,64 +37,7 @@ function CreateCallPage() {
               </span>
               <h2 className="text-xl font-bold">Detalhes do problema</h2>
             </div>
-
-            <form className="space-y-5">
-              <div>
-                <label className="mb-2 block text-sm font-semibold" htmlFor="title">
-                  Título <span className="text-amber-300">*</span>
-                </label>
-                <input
-                  className="w-full rounded-xl border border-stone-600 bg-[#17211b] px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-teal-300 focus:ring-4 focus:ring-teal-300/20"
-                  id="title"
-                  maxLength={100}
-                  placeholder="Ex.: Projetor da sala 204 com falha"
-                  type="text"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold" htmlFor="description">
-                  Descrição <span className="text-amber-300">*</span>
-                </label>
-                <textarea
-                  className="min-h-32 w-full resize-y rounded-xl border border-stone-600 bg-[#17211b] px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-teal-300 focus:ring-4 focus:ring-teal-300/20"
-                  id="description"
-                  placeholder="Descreva o problema encontrado"
-                  rows={4}
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold" htmlFor="location">
-                  Local <span className="text-amber-300">*</span>
-                </label>
-                <input
-                  className="w-full rounded-xl border border-stone-600 bg-[#17211b] px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-teal-300 focus:ring-4 focus:ring-teal-300/20"
-                  id="location"
-                  placeholder="Ex.: Laboratório 1"
-                  type="text"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold" htmlFor="priority">
-                  Prioridade <span className="text-amber-300">*</span>
-                </label>
-                <select
-                  className="w-full rounded-xl border border-stone-600 bg-[#17211b] px-4 py-3 text-sm text-stone-100 outline-none focus:border-teal-300 focus:ring-4 focus:ring-teal-300/20"
-                  defaultValue="medium"
-                  id="priority"
-                >
-                  <option value="low">Baixa</option>
-                  <option value="medium">Média</option>
-                  <option value="high">Alta</option>
-                </select>
-              </div>
-
-              <ActionButton type="submit" variant="primary">
-                Registrar chamado
-              </ActionButton>
-            </form>
+            <MaintenanceRequestForm onAdd={handleAddRequest} />
           </section>
 
           <section className="rounded-[1.5rem] border border-stone-700 bg-[#223128] p-6 shadow-sm">
@@ -95,9 +47,7 @@ function CreateCallPage() {
               </span>
               <h2 className="text-xl font-bold">Chamados registrados</h2>
             </div>
-            <div className="flex min-h-64 items-center justify-center rounded-xl border border-dashed border-stone-600 p-6 text-center">
-              <p className="text-sm text-stone-400">Nenhum chamado registrado ainda.</p>
-            </div>
+            <MaintenanceRequestList requests={requests} />
           </section>
         </div>
       </div>
