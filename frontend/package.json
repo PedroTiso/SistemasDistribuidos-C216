@@ -10,7 +10,11 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome lint .",
-    "check": "biome check ."
+    "check": "biome check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@tailwindcss/vite": "latest",
@@ -22,6 +26,12 @@
     "vite": "latest"
   },
   "devDependencies": {
-    "@biomejs/biome": "latest"
+    "@biomejs/biome": "latest",
+    "@playwright/test": "^1.65.1",
+    "@testing-library/jest-dom": "^8.0.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.13",
+    "jsdom": "^29.1.1",
+    "vitest": "^5.1.2"
   }
 }
