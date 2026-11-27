@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { validateMaintenanceRequest } from "../validation.js";
 import ActionButton from "./common/ActionButton.jsx";
 
@@ -8,6 +8,18 @@ function MaintenanceRequestForm({ initialRequest = null, onAdd, onCancel, onUpda
   const [location, setLocation] = useState(initialRequest?.location ?? "");
   const [priority, setPriority] = useState(initialRequest?.priority ?? "medium");
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const stateOfMyStates = {
+      title: title,
+      description: description,
+      location: location,
+      priority: priority
+    };
+
+    console.log('Valores atualizados:', stateOfMyStates);
+    
+  }, [title, description, location, priority])
 
   function handleSubmit(event) {
     event.preventDefault();
