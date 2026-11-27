@@ -1,15 +1,57 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ActionButton from "../components/common/ActionButton.jsx";
 import MaintenanceRequestForm from "../components/MaintenanceRequestForm.jsx";
 import MaintenanceRequestList from "../components/MaintenanceRequestList.jsx";
+import {
+  createMaintenanceRequest,
+  listMaintenanceRequests,
+} from "../services/maintenanceRequests.js";
 
 function CreateCallPage() {
   const [requests, setRequests] = useState([]);
   const [editingRequest, setEditingRequest] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleAddRequest = (request) => {
-    setRequests((currentRequests) => [...currentRequests, { ...request, id: crypto.randomUUID() }]);
+  useEffect(() => {
+    let isMounted = true;
+
+    listMaintenanceRequests()
+      .then((loadedRequests) => {
+        if (isMounted) {
+          setRequests(loadedRequests);
+        }
+      })
+      .catch((requestError) => {
+        if (isMounted) {
+          setError(requestError.message);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleAddRequest = async (request) => {
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const createdRequest = await createMaintenanceRequest(request);
+      setRequests((currentRequests) => [...currentRequests, createdRequest]);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleUpdateRequest = (updatedRequest) => {
@@ -57,7 +99,7 @@ function CreateCallPage() {
               </span>
               <h2 className="text-xl font-bold">Detalhes do problema</h2>
             </div>
-            <MaintenanceRequestForm onAdd={handleAddRequest} />
+            <MaintenanceRequestForm onAdd={handleAddRequest} submitting={submitting} />
           </section>
 
           <section className="rounded-[1.5rem] border border-stone-700 bg-[#223128] p-6 shadow-sm">
@@ -67,11 +109,22 @@ function CreateCallPage() {
               </span>
               <h2 className="text-xl font-bold">Chamados registrados</h2>
             </div>
-            <MaintenanceRequestList
-              onDelete={handleDeleteRequest}
-              onEdit={setEditingRequest}
-              requests={requests}
-            />
+            {error && (
+              <p className="mb-4 rounded-xl bg-rose-950/60 p-4 text-sm text-rose-100" role="alert">
+                {error}
+              </p>
+            )}
+            {loading ? (
+              <p className="flex min-h-64 items-center justify-center text-sm text-stone-400">
+                Carregando chamados...
+              </p>
+            ) : (
+              <MaintenanceRequestList
+                onDelete={handleDeleteRequest}
+                onEdit={setEditingRequest}
+                requests={requests}
+              />
+            )}
           </section>
         </div>
       </div>

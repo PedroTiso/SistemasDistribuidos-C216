@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { validateMaintenanceRequest } from "../validation.js";
 import ActionButton from "./common/ActionButton.jsx";
 
-function MaintenanceRequestForm({ initialRequest = null, onAdd, onCancel, onUpdate }) {
+function MaintenanceRequestForm({
+  initialRequest = null,
+  onAdd,
+  onCancel,
+  onUpdate,
+  submitting = false,
+}) {
   const [title, setTitle] = useState(initialRequest?.title ?? "");
   const [description, setDescription] = useState(initialRequest?.description ?? "");
   const [location, setLocation] = useState(initialRequest?.location ?? "");
@@ -20,7 +26,7 @@ function MaintenanceRequestForm({ initialRequest = null, onAdd, onCancel, onUpda
     console.log("Valores atualizados:", stateOfMyStates);
   }, [title, description, location, priority]);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const result = validateMaintenanceRequest(title, description, location, priority);
     setErrors(result.errors);
@@ -30,9 +36,9 @@ function MaintenanceRequestForm({ initialRequest = null, onAdd, onCancel, onUpda
     }
 
     if (initialRequest) {
-      onUpdate({ ...initialRequest, ...result.values });
+      await onUpdate({ ...initialRequest, ...result.values });
     } else {
-      onAdd({ ...result.values, status: "open" });
+      await onAdd({ ...result.values, status: "open" });
     }
 
     onCancel?.();
@@ -130,8 +136,8 @@ function MaintenanceRequestForm({ initialRequest = null, onAdd, onCancel, onUpda
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <ActionButton disabled={!isFormComplete} type="submit" variant="primary">
-          {initialRequest ? "Salvar alterações" : "Registrar chamado"}
+        <ActionButton disabled={!isFormComplete || submitting} type="submit" variant="primary">
+          {submitting ? "Salvando..." : initialRequest ? "Salvar alterações" : "Registrar chamado"}
         </ActionButton>
         {initialRequest && (
           <ActionButton onClick={onCancel} type="button" variant="outline">
