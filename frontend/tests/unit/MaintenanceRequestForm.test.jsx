@@ -1,10 +1,10 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import MaintenanceRequestForm from "../../src/components/MaintenanceRequestForm.jsx";
 
 describe("MaintenanceRequestForm", () => {
-  it("submits a valid maintenance request and clears the fields", () => {
-    const onAdd = vi.fn();
+  it("submits a valid maintenance request and clears the fields", async () => {
+    const onAdd = vi.fn().mockResolvedValue(true);
     render(<MaintenanceRequestForm onAdd={onAdd} />);
 
     fireEvent.change(screen.getByLabelText(/título/i), { target: { value: "Teclado quebrado" } });
@@ -21,7 +21,7 @@ describe("MaintenanceRequestForm", () => {
       status: "open",
       title: "Teclado quebrado",
     });
-    expect(screen.getByLabelText(/título/i)).toHaveValue("");
+    await waitFor(() => expect(screen.getByLabelText(/título/i)).toHaveValue(""));
   });
 
   it("keeps the submit button disabled for numeric-only values", () => {

@@ -27,6 +27,22 @@ jobs:
       - name: Baixar o repositorio
         uses: actions/checkout@v6
 
+      - name: Subir a API e o banco
+        working-directory: .
+        run: docker compose up -d --build database backend
+
+      - name: Aguardar a API
+        working-directory: .
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent http://localhost:8000/docs > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker compose logs backend
+          exit 1
+
       - name: Configurar Node.js
         uses: actions/setup-node@v6
         with:
@@ -62,3 +78,8 @@ jobs:
           name: playwright-report
           path: frontend/playwright-report/
           retention-days: 7
+
+      - name: Derrubar a API e o banco
+        if: always()
+        working-directory: .
+        run: docker compose down -v
