@@ -8,6 +8,7 @@ function ActionButton({
   const styles = {
     primary: "bg-amber-300 text-[#17211b] hover:bg-amber-200",
     dark: "bg-[#17211b] text-amber-300 hover:bg-[#223128]",
+    danger: "bg-rose-900/70 text-rose-100 hover:bg-rose-800",
     outline: "border border-stone-400 text-stone-700 hover:border-teal-700 hover:text-teal-700",
   };
 

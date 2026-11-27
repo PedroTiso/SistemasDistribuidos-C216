@@ -2,11 +2,11 @@ import { useState } from "react";
 import { validateMaintenanceRequest } from "../validation.js";
 import ActionButton from "./common/ActionButton.jsx";
 
-function MaintenanceRequestForm({ onAdd }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [priority, setPriority] = useState("medium");
+function MaintenanceRequestForm({ initialRequest = null, onAdd, onCancel, onUpdate }) {
+  const [title, setTitle] = useState(initialRequest?.title ?? "");
+  const [description, setDescription] = useState(initialRequest?.description ?? "");
+  const [location, setLocation] = useState(initialRequest?.location ?? "");
+  const [priority, setPriority] = useState(initialRequest?.priority ?? "medium");
   const [errors, setErrors] = useState({});
 
   function handleSubmit(event) {
@@ -18,7 +18,13 @@ function MaintenanceRequestForm({ onAdd }) {
       return;
     }
 
-    onAdd({ ...result.values, status: "open" });
+    if (initialRequest) {
+      onUpdate({ ...initialRequest, ...result.values });
+    } else {
+      onAdd({ ...result.values, status: "open" });
+    }
+
+    onCancel?.();
     setTitle("");
     setDescription("");
     setLocation("");
@@ -112,9 +118,16 @@ function MaintenanceRequestForm({ onAdd }) {
         </select>
       </div>
 
-      <ActionButton disabled={!isFormComplete} type="submit" variant="primary">
-        Registrar chamado
-      </ActionButton>
+      <div className="flex flex-wrap gap-3">
+        <ActionButton disabled={!isFormComplete} type="submit" variant="primary">
+          {initialRequest ? "Salvar alterações" : "Registrar chamado"}
+        </ActionButton>
+        {initialRequest && (
+          <ActionButton onClick={onCancel} type="button" variant="outline">
+            Cancelar
+          </ActionButton>
+        )}
+      </div>
     </form>
   );
 }
