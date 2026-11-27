@@ -14,12 +14,11 @@ function MaintenanceRequestForm({ initialRequest = null, onAdd, onCancel, onUpda
       title: title,
       description: description,
       location: location,
-      priority: priority
+      priority: priority,
     };
 
-    console.log('Valores atualizados:', stateOfMyStates);
-    
-  }, [title, description, location, priority])
+    console.log("Valores atualizados:", stateOfMyStates);
+  }, [title, description, location, priority]);
 
   function handleSubmit(event) {
     event.preventDefault();
