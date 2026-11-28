@@ -103,6 +103,7 @@ frontend/
 ## Pré-requisitos
 
 - Docker Desktop em execução.
+- Python 3.14 para executar o backend localmente.
 - Node.js 24 para executar o frontend localmente.
 - Poetry 2.4.x para executar o backend localmente.
 - GNU Make, caso queira usar os comandos do `Makefile`. No Windows, também é
