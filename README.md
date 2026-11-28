@@ -102,6 +102,29 @@ frontend/
 - GNU Make, caso queira usar os comandos do `Makefile`. No Windows, também é
   possível usar WSL ou executar diretamente os comandos Docker/npm/Poetry.
 
+## Variáveis de ambiente
+
+O arquivo `.env.example` apresenta as configurações utilizadas pelo ambiente
+local. Para criar uma configuração local, copie-o para `.env` e ajuste os
+valores quando necessário:
+
+```bash
+cp .env.example .env
+```
+
+| Variável | Finalidade | Valor padrão |
+| --- | --- | --- |
+| `POSTGRES_DB` | Nome do banco PostgreSQL | `app_db` |
+| `POSTGRES_USER` | Usuário do PostgreSQL | `app_user` |
+| `POSTGRES_PASSWORD` | Senha local do PostgreSQL | `app_password` |
+| `DATABASE_URL` | URL de conexão usada pelo backend local | `postgresql+psycopg://app_user:app_password@localhost:5432/app_db` |
+| `FRONTEND_PORT` | Porta publicada pelo frontend | `5173` |
+| `VITE_API_URL` | URL da API utilizada pelo frontend | `http://localhost:8000` |
+
+Os valores padrão do Docker Compose são usados quando as variáveis não são
+definidas. O arquivo `.env` não deve ser versionado, pois pode conter dados
+locais ou credenciais.
+
 ## Executar com Docker
 
 Na raiz do projeto:
