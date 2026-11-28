@@ -7,6 +7,12 @@ persiste os chamados em PostgreSQL e permite listá-los, editá-los e removê-lo
 O projeto foi construído com a mesma stack e a mesma evolução incremental das
 práticas da disciplina de Sistemas Distribuídos.
 
+## Documentação
+
+A documentação técnica detalhada está organizada na pasta [`docs`](docs/README.md),
+com materiais sobre arquitetura, Docker, frontend, persistência, integração
+full stack, testes e GitHub Actions.
+
 ## Arquitetura
 
 ```text
